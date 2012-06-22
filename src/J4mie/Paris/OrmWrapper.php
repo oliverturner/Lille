@@ -65,6 +65,8 @@ class ORMWrapper extends ORM
     /**
      * Set the name of the class which the wrapped
      * methods should return instances of.
+     *
+     * @param $class_name
      */
     public function set_class_name($class_name)
     {
@@ -79,8 +81,7 @@ class ORMWrapper extends ORM
      * of the ORM wrapper. Any arguments passed to this method
      * after the name of the filter will be passed to the called
      * filter function as arguments after the ORM class.
-     */
-    /**
+     *
      * @return ORMWrapper|null
      */
     public function filter()
@@ -98,6 +99,12 @@ class ORMWrapper extends ORM
     /**
      * Factory method, return an instance of this
      * class bound to the supplied table name.
+     *
+     * @static
+     *
+     * @param $table_name
+     *
+     * @return \J4mie\Idiorm\ORM|ORMWrapper
      */
     public static function for_table($table_name)
     {
@@ -109,14 +116,21 @@ class ORMWrapper extends ORM
      * Method to create an instance of the model class
      * associated with this wrapper and populate
      * it with the supplied Idiorm instance.
+     *
+     * @param $orm
+     *
+     * @return bool|Model
      */
     protected function _create_model_instance($orm)
     {
         if ($orm === false) {
             return false;
         }
+
+        /** @var Model $model */
         $model = new $this->_class_name();
         $model->set_orm($orm);
+
         return $model;
     }
 
@@ -124,6 +138,10 @@ class ORMWrapper extends ORM
      * Wrap Idiorm's find_one method to return
      * an instance of the class associated with
      * this wrapper instead of the raw ORM class.
+     *
+     * @param null $id
+     *
+     * @return bool|\J4mie\Idiorm\ORM|Model
      */
     public function find_one($id = null)
     {
@@ -134,6 +152,8 @@ class ORMWrapper extends ORM
      * Wrap Idiorm's find_many method to return
      * an array of instances of the class associated
      * with this wrapper instead of the raw ORM class.
+     *
+     * @return array
      */
     public function find_many()
     {
@@ -144,6 +164,10 @@ class ORMWrapper extends ORM
      * Wrap Idiorm's create method to return an
      * empty instance of the class associated with
      * this wrapper instead of the raw ORM class.
+     *
+     * @param null $data
+     *
+     * @return bool|\J4mie\Idiorm\ORM|Model
      */
     public function create($data = null)
     {

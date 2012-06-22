@@ -174,6 +174,12 @@ class ORM
      * this way for the sake of a readable interface, ie
      * ORM::for_table('table_name')->find_one()-> etc. As such,
      * this will normally be the first method called in a chain.
+     *
+     * @static
+     *
+     * @param $table_name
+     *
+     * @return ORM
      */
     public static function for_table($table_name)
     {
@@ -183,6 +189,8 @@ class ORM
 
     /**
      * Set up the database connection used by the class.
+     *
+     * @static
      */
     protected static function _setup_db()
     {
@@ -201,6 +209,10 @@ class ORM
      * Set the PDO object used by Idiorm to communicate with the database.
      * This is public in case the ORM should use a ready-instantiated
      * PDO object as its database connection.
+     *
+     * @static
+     *
+     * @param $db
      */
     public static function set_db($db)
     {
@@ -213,6 +225,8 @@ class ORM
      * (table names, column names etc). If this has been specified
      * manually using ORM::configure('identifier_quote_character', 'some-char'),
      * this will do nothing.
+     *
+     * @static
      */
     public static function _setup_identifier_quote_character()
     {
@@ -224,6 +238,9 @@ class ORM
     /**
      * Return the correct character used to quote identifiers (table
      * names, column names etc) by looking at the driver being used by PDO.
+     *
+     * @static
+     * @return string
      */
     protected static function _detect_identifier_quote_character()
     {
@@ -246,6 +263,9 @@ class ORM
      * Returns the PDO instance used by the the ORM to communicate with
      * the database. This can be called if any low-level DB access is
      * required outside the class.
+     *
+     * @static
+     * @return mixed
      */
     public static function get_db()
     {
@@ -261,6 +281,13 @@ class ORM
      * query isn't executed like this (PDO normally passes the query and
      * parameters to the database which takes care of the binding) but
      * doing it this way makes the logged queries more readable.
+     *
+     * @static
+     *
+     * @param $query
+     * @param $parameters
+     *
+     * @return bool
      */
     protected static function _log_query($query, $parameters)
     {
@@ -292,6 +319,9 @@ class ORM
      * Get the last query executed. Only works if the
      * 'logging' config option is set to true. Otherwise
      * this will return null.
+     *
+     * @static
+     * @return mixed
      */
     public static function get_last_query()
     {
@@ -302,6 +332,9 @@ class ORM
      * Get an array containing all the queries run up to
      * now. Only works if the 'logging' config option is
      * set to true. Otherwise returned array will be empty.
+     *
+     * @static
+     * @return array
      */
     public static function get_query_log()
     {
@@ -315,6 +348,9 @@ class ORM
     /**
      * "Private" constructor; shouldn't be called directly.
      * Use the ORM::for_table factory method instead.
+     *
+     * @param       $table_name
+     * @param array $data
      */
     protected function __construct($table_name, $data = array())
     {
@@ -329,6 +365,10 @@ class ORM
      * the instance. If so, all fields will be flagged as
      * dirty so all will be saved to the database when
      * save() is called.
+     *
+     * @param null $data
+     *
+     * @return ORM
      */
     public function create($data = null)
     {
@@ -346,6 +386,10 @@ class ORM
      * This is mostly useful for libraries built on top of Idiorm, and will
      * not normally be used in manually built queries. If you don't know why
      * you would want to use this, you should probably just ignore it.
+     *
+     * @param $id_column
+     *
+     * @return ORM
      */
     public function use_id_column($id_column)
     {
@@ -356,6 +400,10 @@ class ORM
     /**
      * Create an ORM instance from the given row (an associative
      * array of data fetched from the database)
+     *
+     * @param $row
+     *
+     * @return ORM
      */
     protected function _create_instance_from_row($row)
     {
@@ -373,6 +421,10 @@ class ORM
      * As a shortcut, you may supply an ID as a parameter
      * to this method. This will perform a primary key
      * lookup on the table.
+     *
+     * @param null $id
+     *
+     * @return bool|ORM
      */
     public function find_one($id = null)
     {
@@ -394,6 +446,8 @@ class ORM
      * from your query, and execute it. Will return an array
      * of instances of the ORM class, or an empty array if
      * no rows were returned.
+     *
+     * @return array
      */
     public function find_many()
     {
@@ -405,6 +459,8 @@ class ORM
      * Tell the ORM that you wish to execute a COUNT query.
      * Will return an integer representing the number of
      * rows returned.
+     *
+     * @return int
      */
     public function count()
     {
@@ -416,6 +472,10 @@ class ORM
     /**
      * Tell the ORM that you wish to execute a MAX query.
      * Will return the max value of the choosen column.
+     *
+     * @param $column
+     *
+     * @return int
      */
     public function max($column)
     {
@@ -427,6 +487,10 @@ class ORM
     /**
      * Tell the ORM that you wish to execute a MIN query.
      * Will return the min value of the choosen column.
+     *
+     * @param $column
+     *
+     * @return int
      */
     public function min($column)
     {
@@ -438,6 +502,10 @@ class ORM
     /**
      * Tell the ORM that you wish to execute a AVG query.
      * Will return the average value of the choosen column.
+     *
+     * @param $column
+     *
+     * @return int
      */
     public function avg($column)
     {
@@ -449,6 +517,10 @@ class ORM
     /**
      * Tell the ORM that you wish to execute a SUM query.
      * Will return the sum of the choosen column.
+     *
+     * @param $column
+     *
+     * @return int
      */
     public function sum($column)
     {
@@ -459,7 +531,11 @@ class ORM
 
     /**
      * Tell the ORM that you wish to execute a VAR_POP query.
-     * Will return the max value of the choosen column.
+     * Will return the standard deviation of the choosen column.
+     *
+     * @param $column
+     *
+     * @return int
      */
     public function std_dev($column)
     {
@@ -468,13 +544,15 @@ class ORM
         return ($result !== false && isset($result->stdvalue)) ? (int)$result->stdvalue : 0;
     }
 
-
-
     /**
      * This method can be called to hydrate (populate) this
      * instance of the class from an associative array of data.
      * This will usually be called only from inside the class,
      * but it's public in case you need to call it directly.
+     *
+     * @param array $data
+     *
+     * @return ORM
      */
     public function hydrate($data = array())
     {
@@ -485,6 +563,8 @@ class ORM
     /**
      * Force the ORM to flag all the fields in the $data array
      * as "dirty" and therefore update them when save() is called.
+     *
+     * @return ORM
      */
     public function force_all_dirty()
     {
@@ -498,6 +578,11 @@ class ORM
      * should be an array of values which will be bound to the
      * placeholders in the query. If this method is called, all
      * other query building methods will be ignored.
+     *
+     * @param string $query
+     * @param array  $parameters
+     *
+     * @return ORM
      */
     public function raw_query($query, $parameters)
     {
@@ -509,6 +594,10 @@ class ORM
 
     /**
      * Add an alias for the main table to be used in SELECT queries
+     *
+     * @param string $alias
+     *
+     * @return ORM
      */
     public function table_alias($alias)
     {
@@ -520,6 +609,11 @@ class ORM
      * Internal method to add an unquoted expression to the set
      * of columns returned by the SELECT query. The second optional
      * argument is the alias to return the expression as.
+     *
+     * @param      $expr
+     * @param null $alias
+     *
+     * @return ORM
      */
     protected function _add_result_column($expr, $alias = null)
     {
@@ -541,6 +635,11 @@ class ORM
      * Add a column to the list of columns returned by the SELECT
      * query. This defaults to '*'. The second optional argument is
      * the alias to return the column as.
+     *
+     * @param string $column
+     * @param null   $alias
+     *
+     * @return ORM
      */
     public function select($column, $alias = null)
     {
@@ -552,6 +651,11 @@ class ORM
      * Add an unquoted expression to the list of columns returned
      * by the SELECT query. The second optional argument is
      * the alias to return the column as.
+     *
+     * @param string $expr
+     * @param null   $alias
+     *
+     * @return ORM
      */
     public function select_expr($expr, $alias = null)
     {
@@ -560,6 +664,8 @@ class ORM
 
     /**
      * Add a DISTINCT keyword before the list of columns in the SELECT query
+     *
+     * @return ORM
      */
     public function distinct()
     {
@@ -588,6 +694,13 @@ class ORM
      * ON `user`.`id` = `profile`.`user_id`
      *
      * The final (optional) argument specifies an alias for the joined table.
+     *
+     * @param string $join_operator
+     * @param string $table
+     * @param array  $constraint
+     * @param null   $table_alias
+     *
+     * @return ORM
      */
     protected function _add_join_source($join_operator, $table, $constraint, $table_alias = null)
     {
@@ -616,6 +729,12 @@ class ORM
 
     /**
      * Add a simple JOIN source to the query
+     *
+     * @param string $table
+     * @param array  $constraint
+     * @param null   $table_alias
+     *
+     * @return ORM
      */
     public function join($table, $constraint, $table_alias = null)
     {
@@ -624,6 +743,12 @@ class ORM
 
     /**
      * Add an INNER JOIN souce to the query
+     *
+     * @param string $table
+     * @param array  $constraint
+     * @param null   $table_alias
+     *
+     * @return ORM
      */
     public function inner_join($table, $constraint, $table_alias = null)
     {
@@ -632,6 +757,12 @@ class ORM
 
     /**
      * Add a LEFT OUTER JOIN souce to the query
+     *
+     * @param string $table
+     * @param array  $constraint
+     * @param null   $table_alias
+     *
+     * @return ORM
      */
     public function left_outer_join($table, $constraint, $table_alias = null)
     {
@@ -640,6 +771,12 @@ class ORM
 
     /**
      * Add an RIGHT OUTER JOIN souce to the query
+     *
+     * @param string $table
+     * @param array  $constraint
+     * @param null   $table_alias
+     *
+     * @return ORM
      */
     public function right_outer_join($table, $constraint, $table_alias = null)
     {
@@ -648,6 +785,12 @@ class ORM
 
     /**
      * Add an FULL OUTER JOIN souce to the query
+     *
+     * @param string $table
+     * @param array  $constraint
+     * @param null   $table_alias
+     *
+     * @return ORM
      */
     public function full_outer_join($table, $constraint, $table_alias = null)
     {
@@ -656,6 +799,11 @@ class ORM
 
     /**
      * Internal method to add a WHERE condition to the query
+     *
+     * @param       $fragment
+     * @param array $values
+     *
+     * @return ORM
      */
     protected function _add_where($fragment, $values = array())
     {
@@ -674,6 +822,12 @@ class ORM
      * style WHERE condition into a string and value ready to
      * be passed to the _add_where method. Avoids duplication
      * of the call to _quote_identifier
+     *
+     * @param $column_name
+     * @param $separator
+     * @param $value
+     *
+     * @return ORM
      */
     protected function _add_simple_where($column_name, $separator, $value)
     {
@@ -684,6 +838,10 @@ class ORM
     /**
      * Return a string containing the given number of question marks,
      * separated by commas. Eg "?, ?, ?"
+     *
+     * @param $number_of_placeholders
+     *
+     * @return string
      */
     protected function _create_placeholders($number_of_placeholders)
     {
@@ -695,6 +853,11 @@ class ORM
      * this is called in the chain, an additional WHERE will be
      * added, and these will be ANDed together when the final query
      * is built.
+     *
+     * @param $column_name
+     * @param $value
+     *
+     * @return ORM
      */
     public function where($column_name, $value)
     {
@@ -704,6 +867,11 @@ class ORM
     /**
      * More explicitly named version of for the where() method.
      * Can be used if preferred.
+     *
+     * @param $column_name
+     * @param $value
+     *
+     * @return ORM
      */
     public function where_equal($column_name, $value)
     {
@@ -712,6 +880,11 @@ class ORM
 
     /**
      * Add a WHERE column != value clause to your query.
+     *
+     * @param $column_name
+     * @param $value
+     *
+     * @return ORM
      */
     public function where_not_equal($column_name, $value)
     {
@@ -720,6 +893,10 @@ class ORM
 
     /**
      * Special method to query the table by its primary key
+     *
+     * @param $id
+     *
+     * @return ORM
      */
     public function where_id_is($id)
     {
@@ -728,6 +905,11 @@ class ORM
 
     /**
      * Add a WHERE ... LIKE clause to your query.
+     *
+     * @param $column_name
+     * @param $value
+     *
+     * @return ORM
      */
     public function where_like($column_name, $value)
     {
@@ -736,6 +918,11 @@ class ORM
 
     /**
      * Add where WHERE ... NOT LIKE clause to your query.
+     *
+     * @param $column_name
+     * @param $value
+     *
+     * @return ORM
      */
     public function where_not_like($column_name, $value)
     {
@@ -744,6 +931,11 @@ class ORM
 
     /**
      * Add a WHERE ... > clause to your query
+     *
+     * @param $column_name
+     * @param $value
+     *
+     * @return ORM
      */
     public function where_gt($column_name, $value)
     {
@@ -752,6 +944,11 @@ class ORM
 
     /**
      * Add a WHERE ... < clause to your query
+     *
+     * @param $column_name
+     * @param $value
+     *
+     * @return ORM
      */
     public function where_lt($column_name, $value)
     {
@@ -760,6 +957,11 @@ class ORM
 
     /**
      * Add a WHERE ... >= clause to your query
+     *
+     * @param $column_name
+     * @param $value
+     *
+     * @return ORM
      */
     public function where_gte($column_name, $value)
     {
@@ -768,6 +970,11 @@ class ORM
 
     /**
      * Add a WHERE ... <= clause to your query
+     *
+     * @param $column_name
+     * @param $value
+     *
+     * @return ORM
      */
     public function where_lte($column_name, $value)
     {
@@ -776,6 +983,11 @@ class ORM
 
     /**
      * Add a WHERE ... IN clause to your query
+     *
+     * @param $column_name
+     * @param $values
+     *
+     * @return ORM
      */
     public function where_in($column_name, $values)
     {
@@ -786,6 +998,11 @@ class ORM
 
     /**
      * Add a WHERE ... NOT IN clause to your query
+     *
+     * @param $column_name
+     * @param $values
+     *
+     * @return ORM
      */
     public function where_not_in($column_name, $values)
     {
@@ -796,6 +1013,10 @@ class ORM
 
     /**
      * Add a WHERE column IS NULL clause to your query
+     *
+     * @param $column_name
+     *
+     * @return ORM
      */
     public function where_null($column_name)
     {
@@ -805,6 +1026,10 @@ class ORM
 
     /**
      * Add a WHERE column IS NOT NULL clause to your query
+     *
+     * @param $column_name
+     *
+     * @return ORM
      */
     public function where_not_null($column_name)
     {
@@ -816,6 +1041,11 @@ class ORM
      * Add a raw WHERE clause to the query. The clause should
      * contain question mark placeholders, which will be bound
      * to the parameters supplied in the second argument.
+     *
+     * @param       $clause
+     * @param array $parameters
+     *
+     * @return ORM
      */
     public function where_raw($clause, $parameters = array())
     {
@@ -824,6 +1054,10 @@ class ORM
 
     /**
      * Add a LIMIT to the query
+     *
+     * @param $limit
+     *
+     * @return ORM
      */
     public function limit($limit)
     {
@@ -833,6 +1067,10 @@ class ORM
 
     /**
      * Add an OFFSET to the query
+     *
+     * @param $offset
+     *
+     * @return ORM
      */
     public function offset($offset)
     {
@@ -842,6 +1080,11 @@ class ORM
 
     /**
      * Add an ORDER BY clause to the query
+     *
+     * @param $column_name
+     * @param $ordering
+     *
+     * @return ORM
      */
     protected function _add_order_by($column_name, $ordering)
     {
@@ -852,6 +1095,10 @@ class ORM
 
     /**
      * Add an ORDER BY column DESC clause
+     *
+     * @param $column_name
+     *
+     * @return ORM
      */
     public function order_by_desc($column_name)
     {
@@ -860,6 +1107,10 @@ class ORM
 
     /**
      * Add an ORDER BY column ASC clause
+     *
+     * @param $column_name
+     *
+     * @return ORM
      */
     public function order_by_asc($column_name)
     {
@@ -1147,6 +1398,10 @@ class ORM
     /**
      * Return the value of a property of this object (database row)
      * or null if not present.
+     *
+     * @param $key
+     *
+     * @return null
      */
     public function get($key)
     {
@@ -1201,6 +1456,8 @@ class ORM
     /**
      * Save any fields which have been modified on this object
      * to the database.
+     *
+     * @return bool
      */
     public function save()
     {
@@ -1232,6 +1489,7 @@ class ORM
         }
 
         $this->_dirty_fields = array();
+
         return $success;
     }
 
@@ -1272,16 +1530,18 @@ class ORM
 
     /**
      * Delete this record from the database
+     *
+     * @return mixed
      */
     public function delete()
     {
-        $query  = join(" ", array(
-                                 "DELETE FROM",
-                                 $this->_quote_identifier($this->_table_name),
-                                 "WHERE",
-                                 $this->_quote_identifier($this->_get_id_column_name()),
-                                 "= ?",
-                            ));
+        $query = join(" ", array(
+                                "DELETE FROM",
+                                $this->_quote_identifier($this->_table_name),
+                                "WHERE",
+                                $this->_quote_identifier($this->_get_id_column_name()),
+                                "= ?",
+                           ));
         $params = array($this->id());
         self::_log_query($query, $params);
         $statement = self::$_db->prepare($query);

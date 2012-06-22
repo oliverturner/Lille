@@ -1,0 +1,21 @@
+{
+  "name"       : "codedsignal/Lille",
+  "type"       : "library",
+  "description": "Idiorm & Paris integration for Silex.",
+  "keywords"   : ["silex", "idiorm", "paris"],
+  "homepage"   : "http://github.com/codedsignal/Lille",
+  "license"    : "MIT",
+  "authors"    : [
+    {
+      "name": "Jamie Matthews"
+    }
+  ],
+  "require"    : {
+    "silex/silex": ">=1.0.0-dev"
+  },
+  "autoload"   : {
+    "psr-0": {
+      "J4mie": ""
+    }
+  }
+}

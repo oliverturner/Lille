@@ -40,6 +40,14 @@ class Model
      * Retrieve the value of a static property on a class. If the
      * class or the property does not exist, returns the default
      * value supplied as the third argument (which defaults to null).
+     *
+     * @static
+     *
+     * @param      $class_name
+     * @param      $property
+     * @param null $default
+     *
+     * @return null
      */
     protected static function _get_static_property($class_name, $property, $default = null)
     {
@@ -47,6 +55,7 @@ class Model
             return $default;
         }
         $properties = get_class_vars($class_name);
+
         return $properties[$property];
     }
 
@@ -56,6 +65,12 @@ class Model
      * named $_table, the value of this property will be
      * returned. If not, the class name will be converted using
      * the _class_name_to_table_name method method.
+     *
+     * @static
+     *
+     * @param $class_name
+     *
+     * @return null|string
      */
     protected static function _get_table_name($class_name)
     {
@@ -63,6 +78,7 @@ class Model
         if (is_null($specified_table_name)) {
             return self::_class_name_to_table_name($class_name);
         }
+
         return $specified_table_name;
     }
 
@@ -70,6 +86,12 @@ class Model
      * Static method to convert a class name in CapWords
      * to a table name in lowercase_with_underscores.
      * For example, CarTyre would be converted to car_tyre.
+     *
+     * @static
+     *
+     * @param $class_name
+     *
+     * @return string
      */
     protected static function _class_name_to_table_name($class_name)
     {
@@ -79,6 +101,12 @@ class Model
     /**
      * Return the ID column name to use for this class. If it is
      * not set on the class, returns null.
+     *
+     * @static
+     *
+     * @param $class_name
+     *
+     * @return null
      */
     protected static function _get_id_column_name($class_name)
     {
@@ -90,12 +118,20 @@ class Model
      * (the specified foreign key column name) is null, returns the second
      * argument (the name of the table) with the default foreign key column
      * suffix appended.
+     *
+     * @static
+     *
+     * @param $specified_foreign_key_name
+     * @param $table_name
+     *
+     * @return string
      */
     protected static function _build_foreign_key_name($specified_foreign_key_name, $table_name)
     {
         if (!is_null($specified_foreign_key_name)) {
             return $specified_foreign_key_name;
         }
+
         return $table_name . self::DEFAULT_FOREIGN_KEY_SUFFIX;
     }
 
@@ -120,6 +156,7 @@ class Model
         $wrapper    = ORMWrapper::for_table($table_name);
         $wrapper->set_class_name($class_name);
         $wrapper->use_id_column(self::_get_id_column_name($class_name));
+
         return $wrapper;
     }
 
@@ -128,17 +165,28 @@ class Model
      * has_many methods. These two types of association are identical; the
      * only difference is whether find_one or find_many is used to complete
      * the method chain.
+     *
+     * @param      $associated_class_name
+     * @param null $foreign_key_name
+     *
+     * @return \J4mie\Idiorm\ORM
      */
     protected function _has_one_or_many($associated_class_name, $foreign_key_name = null)
     {
         $base_table_name  = self::_get_table_name(get_class($this));
         $foreign_key_name = self::_build_foreign_key_name($foreign_key_name, $base_table_name);
+
         return self::factory($associated_class_name)->where($foreign_key_name, $this->id());
     }
 
     /**
      * Helper method to manage one-to-one relations where the foreign
      * key is on the associated table.
+     *
+     * @param      $associated_class_name
+     * @param null $foreign_key_name
+     *
+     * @return \J4mie\Idiorm\ORM
      */
     protected function has_one($associated_class_name, $foreign_key_name = null)
     {
@@ -148,6 +196,11 @@ class Model
     /**
      * Helper method to manage one-to-many relations where the foreign
      * key is on the associated table.
+     *
+     * @param      $associated_class_name
+     * @param null $foreign_key_name
+     *
+     * @return \J4mie\Idiorm\ORM
      */
     protected function has_many($associated_class_name, $foreign_key_name = null)
     {
@@ -157,6 +210,11 @@ class Model
     /**
      * Helper method to manage one-to-one and one-to-many relations where
      * the foreign key is on the base table.
+     *
+     * @param      $associated_class_name
+     * @param null $foreign_key_name
+     *
+     * @return \J4mie\Idiorm\ORM
      */
     protected function belongs_to($associated_class_name, $foreign_key_name = null)
     {
@@ -169,6 +227,13 @@ class Model
     /**
      * Helper method to manage many-to-many relationships via an intermediate model. See
      * README for a full explanation of the parameters.
+     *
+     * @param      $associated_class_name
+     * @param null $join_class_name
+     * @param null $key_to_base_table
+     * @param null $key_to_associated_table
+     *
+     * @return \J4mie\Idiorm\ORM
      */
     protected function has_many_through($associated_class_name, $join_class_name = null, $key_to_base_table = null,
         $key_to_associated_table = null)
@@ -206,6 +271,8 @@ class Model
 
     /**
      * Set the wrapped ORM instance associated with this Model instance.
+     *
+     * @param ORM $orm
      */
     public function set_orm($orm)
     {
@@ -214,6 +281,10 @@ class Model
 
     /**
      * Magic getter method, allows $model->property access to data.
+     *
+     * @param $property
+     *
+     * @return null
      */
     public function __get($property)
     {
@@ -222,6 +293,9 @@ class Model
 
     /**
      * Magic setter method, allows $model->property = 'value' access to data.
+     *
+     * @param $property
+     * @param $value
      */
     public function __set($property, $value)
     {
@@ -230,6 +304,10 @@ class Model
 
     /**
      * Magic isset method, allows isset($model->property) to work correctly.
+     *
+     * @param $property
+     *
+     * @return bool
      */
     public function __isset($property)
     {
@@ -238,6 +316,10 @@ class Model
 
     /**
      * Getter method, allows $model->get('property') access to data
+     *
+     * @param $property
+     *
+     * @return null
      */
     public function get($property)
     {
@@ -246,6 +328,9 @@ class Model
 
     /**
      * Setter method, allows $model->set('property', 'value') access to data.
+     *
+     * @param $property
+     * @param $value
      */
     public function set($property, $value)
     {
@@ -254,6 +339,10 @@ class Model
 
     /**
      * Check whether the given field has changed since the object was created or saved
+     *
+     * @param $property
+     *
+     * @return bool
      */
     public function is_dirty($property)
     {
@@ -262,6 +351,8 @@ class Model
 
     /**
      * Wrapper for Idiorm's as_array method.
+     *
+     * @return mixed
      */
     public function as_array()
     {
@@ -271,6 +362,8 @@ class Model
 
     /**
      * Save the data associated with this model instance to the database.
+     *
+     * @return bool
      */
     public function save()
     {
@@ -279,6 +372,8 @@ class Model
 
     /**
      * Delete the database row associated with this model instance.
+     *
+     * @return mixed
      */
     public function delete()
     {
@@ -287,6 +382,8 @@ class Model
 
     /**
      * Get the database ID of this model instance.
+     *
+     * @return null
      */
     public function id()
     {
@@ -298,6 +395,8 @@ class Model
      * WARNING: The keys in the array MUST match with columns in the
      * corresponding database table. If any keys are supplied which
      * do not match up with columns, the database will throw an error.
+     *
+     * @param $data
      */
     public function hydrate($data)
     {
