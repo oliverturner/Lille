@@ -15,8 +15,8 @@
   },
   "autoload"   : {
     "psr-0": {
-      "J4mie\\Idiorm": "src/",
-      "J4mie\\Paris": "src/"
+      "J4mie": "src/",
+      "Lille": "src/"
     }
   }
 }
