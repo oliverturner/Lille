@@ -1,5 +1,5 @@
 {
-  "name"       : "codedsignal/Lille",
+  "name"       : "codedsignal/lille",
   "type"       : "library",
   "description": "Idiorm & Paris integration for Silex.",
   "keywords"   : ["silex", "idiorm", "paris"],
