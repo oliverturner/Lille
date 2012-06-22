@@ -8,8 +8,6 @@
 
 namespace J4mie\Paris;
 
-use J4mie\Idiorm\ORM;
-
 /**
  * Model base class. Your model objects should extend
  * this class. A minimal subclass would look like:
@@ -32,7 +30,7 @@ class Model
      * The ORM instance used by this model
      * instance to communicate with the database.
      *
-     * @var ORM
+     * @var ORMWrapper
      */
     public $orm;
 
@@ -169,7 +167,7 @@ class Model
      * @param      $associated_class_name
      * @param null $foreign_key_name
      *
-     * @return \J4mie\Idiorm\ORM
+     * @return ORMWrapper
      */
     protected function _has_one_or_many($associated_class_name, $foreign_key_name = null)
     {
@@ -186,7 +184,7 @@ class Model
      * @param      $associated_class_name
      * @param null $foreign_key_name
      *
-     * @return \J4mie\Idiorm\ORM
+     * @return ORMWrapper
      */
     protected function has_one($associated_class_name, $foreign_key_name = null)
     {
@@ -200,7 +198,7 @@ class Model
      * @param      $associated_class_name
      * @param null $foreign_key_name
      *
-     * @return \J4mie\Idiorm\ORM
+     * @return ORMWrapper
      */
     protected function has_many($associated_class_name, $foreign_key_name = null)
     {
@@ -214,7 +212,7 @@ class Model
      * @param      $associated_class_name
      * @param null $foreign_key_name
      *
-     * @return \J4mie\Idiorm\ORM
+     * @return ORMWrapper
      */
     protected function belongs_to($associated_class_name, $foreign_key_name = null)
     {
@@ -233,7 +231,7 @@ class Model
      * @param null $key_to_base_table
      * @param null $key_to_associated_table
      *
-     * @return \J4mie\Idiorm\ORM
+     * @return ORMWrapper
      */
     protected function has_many_through($associated_class_name, $join_class_name = null, $key_to_base_table = null,
         $key_to_associated_table = null)
@@ -272,7 +270,7 @@ class Model
     /**
      * Set the wrapped ORM instance associated with this Model instance.
      *
-     * @param ORM $orm
+     * @param ORMWrapper $orm
      */
     public function set_orm($orm)
     {
