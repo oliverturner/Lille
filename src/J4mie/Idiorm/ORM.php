@@ -1498,12 +1498,14 @@ class ORM
      */
     protected function _build_update()
     {
+        $table   = $this->_quote_identifier($this->_table_name);
         $query   = array();
-        $query[] = "UPDATE {$this->_quote_identifier($this->_table_name)} SET";
+        $query[] = "UPDATE {$table} SET";
 
         $field_list = array();
         foreach ($this->_dirty_fields as $key => $value) {
-            $field_list[] = "{$this->_quote_identifier($key)} = ?";
+            $field = $this->_quote_identifier($key);
+            $field_list[] = "{$field} = ?";
         }
         $query[] = join(", ", $field_list);
         $query[] = "WHERE";
